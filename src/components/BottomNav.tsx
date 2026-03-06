@@ -8,11 +8,11 @@ interface BottomNavProps {
 }
 
 export default function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const tabs = [
     { id: 'home', icon: Home, label: t('home') },
     { id: 'store', icon: ShoppingBag, label: t('store') },
-    { id: 'orders', icon: Package, label: 'طلباتي' },
+    { id: 'orders', icon: Package, label: language === 'ar' ? 'طلباتي' : 'Orders' },
     { id: 'contact', icon: Phone, label: t('contact') },
   ];
 

@@ -120,10 +120,10 @@ export default function OrderHistory() {
                             animate={{ y: 0 }}
                             exit={{ y: '100%' }}
                             transition={{ type: 'spring', damping: 30, stiffness: 320 }}
-                            className="absolute bottom-0 left-0 right-0 max-h-[82%] bg-[#F8F7F4] dark:bg-slate-900 z-[70] rounded-t-[2rem] flex flex-col shadow-2xl overflow-hidden"
+                            className="absolute bottom-0 left-0 right-0 h-[85%] bg-white dark:bg-slate-800 z-[70] rounded-t-[2rem] flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.15)] overflow-hidden pb-24"
                             dir={dir}
                         >
-                            <div className="px-6 py-5 bg-white dark:bg-slate-800 border-b border-stone-100 dark:border-slate-700 flex items-center justify-between shrink-0">
+                            <div className="px-6 py-5 border-b border-stone-100 dark:border-slate-700 flex items-center justify-between shrink-0">
                                 <div>
                                     <h2 className="text-lg font-bold text-stone-800 dark:text-white">{t('orderDetails')}</h2>
                                     <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold">#{selectedOrder.orderNumber}</p>
@@ -137,7 +137,7 @@ export default function OrderHistory() {
                             </div>
 
                             <div className="flex-1 overflow-y-auto p-6 hide-scrollbar space-y-4">
-                                <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-stone-100 dark:border-slate-700 space-y-3">
+                                <div className="bg-stone-50 dark:bg-slate-700/50 rounded-2xl p-4 border border-stone-100 dark:border-slate-700 space-y-3">
                                     <div className="flex items-center gap-3">
                                         <Phone size={16} className="text-stone-400 shrink-0" />
                                         <span className="text-sm text-stone-600 dark:text-stone-300" dir="ltr">{selectedOrder.customerPhone}</span>
@@ -152,7 +152,7 @@ export default function OrderHistory() {
                                     </div>
                                 </div>
 
-                                <div className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-stone-100 dark:border-slate-700">
+                                <div className="bg-stone-50 dark:bg-slate-700/50 rounded-2xl p-4 border border-stone-100 dark:border-slate-700">
                                     <h3 className="text-sm font-bold text-stone-800 dark:text-white mb-3">{t('products')}</h3>
                                     <div className="space-y-2">
                                         {selectedOrder.items.map((item, i) => (

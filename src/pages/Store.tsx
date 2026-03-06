@@ -195,19 +195,19 @@ export default function Store({ products, onProductClick, initialCategory = 'All
                       </div>
 
                       {qty > 0 ? (
-                        <div className="flex items-center gap-1 bg-stone-100 dark:bg-slate-700 rounded-xl p-0.5">
+                        <div className="flex items-center gap-2 bg-stone-100 dark:bg-slate-700 rounded-xl p-1">
                           <button
                             onClick={() => updateQuantity(product.id, qty - 1)}
-                            className="w-7 h-7 bg-white dark:bg-slate-600 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-200"
+                            className="w-9 h-9 bg-white dark:bg-slate-600 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-200 active:scale-95 transition-transform shadow-sm"
                           >
-                            {qty === 1 ? <Trash2 size={12} /> : <Minus size={12} />}
+                            {qty === 1 ? <Trash2 size={16} /> : <Minus size={16} />}
                           </button>
-                          <span className="font-bold text-stone-800 dark:text-white text-sm w-5 text-center">{qty}</span>
+                          <span className="font-bold text-stone-800 dark:text-white text-base w-6 text-center">{qty}</span>
                           <button
                             onClick={() => addToCart(product)}
-                            className="w-7 h-7 bg-emerald-600 text-white rounded-lg flex items-center justify-center"
+                            className="w-9 h-9 bg-emerald-600 text-white rounded-lg flex items-center justify-center active:scale-95 transition-transform shadow-sm"
                           >
-                            <Plus size={12} />
+                            <Plus size={16} />
                           </button>
                         </div>
                       ) : (
@@ -255,13 +255,33 @@ export default function Store({ products, onProductClick, initialCategory = 'All
                     <p className="text-xs font-black text-emerald-700 dark:text-emerald-400 mt-1">
                       {price === 0 ? t('free') : `${formatPrice(price)} ${t('sdg')}`}
                     </p>
-                    <button
-                      onClick={e => { e.stopPropagation(); addToCart(product); }}
-                      className="mt-2 w-full bg-emerald-600 text-white text-xs font-bold py-2 rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-transform"
-                    >
-                      <Plus size={12} />
-                      {t('addToCart').replace('Add to Order', 'Add').replace('أضف للطلب', 'أضف')}
-                    </button>
+                    <div className="mt-2 h-9">
+                      {qty > 0 ? (
+                        <div className="flex items-center justify-between w-full h-full bg-stone-100 dark:bg-slate-700 rounded-xl p-1" onClick={e => e.stopPropagation()}>
+                          <button
+                            onClick={() => updateQuantity(product.id, qty - 1)}
+                            className="w-8 h-full bg-white dark:bg-slate-600 rounded-lg flex items-center justify-center text-stone-600 dark:text-stone-200 active:scale-95 transition-transform shadow-sm"
+                          >
+                            {qty === 1 ? <Trash2 size={14} /> : <Minus size={14} />}
+                          </button>
+                          <span className="font-bold text-stone-800 dark:text-white text-sm">{qty}</span>
+                          <button
+                            onClick={() => addToCart(product)}
+                            className="w-8 h-full bg-emerald-600 text-white rounded-lg flex items-center justify-center active:scale-95 transition-transform shadow-sm"
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={e => { e.stopPropagation(); addToCart(product); }}
+                          className="w-full h-full bg-emerald-600 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1 active:scale-95 transition-transform"
+                        >
+                          <Plus size={14} />
+                          {t('addToCart').replace('Add to Order', 'Add').replace('أضف للطلب', 'أضف')}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               );

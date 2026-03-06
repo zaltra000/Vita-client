@@ -352,17 +352,18 @@ export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: Che
                             </div>
                         )}
 
-                        {/* Map Overlay */}
-                        <AnimatePresence>
-                            {showMap && (
-                                <LocationMap
-                                    area={selectedArea}
-                                    onLocationConfirmed={handleLocationConfirmed}
-                                    onCancel={() => setShowMap(false)}
-                                />
-                            )}
-                        </AnimatePresence>
                     </motion.div>
+
+                    {/* Map Overlay */}
+                    <AnimatePresence>
+                        {showMap && (
+                            <LocationMap
+                                area={selectedArea}
+                                onLocationConfirmed={handleLocationConfirmed}
+                                onCancel={() => setShowMap(false)}
+                            />
+                        )}
+                    </AnimatePresence>
                 </>
             )}
         </AnimatePresence>
