@@ -8,6 +8,7 @@ import { db, auth } from '../firebase';
 import { ref as dbRef, push, set, get } from 'firebase/database';
 import { signInAnonymously, setPersistence, browserLocalPersistence, inMemoryPersistence } from 'firebase/auth';
 import LocationMap from './LocationMap';
+import { sendFcmNotification } from '../services/fcmService';
 
 interface CheckoutScreenProps {
     isOpen: boolean;
@@ -147,6 +148,9 @@ export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: Che
             };
 
             await set(orderRef, orderData);
+
+            // Trigger FCM Notification to Admin (non-blocking)
+            sendFcmNotification(orderData).catch(err => console.error("FCM Trigger Error:", err));
 
             // Save customer info for next time
             localStorage.setItem('vita_customer', JSON.stringify({

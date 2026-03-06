@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { StatusBar } from '@capacitor/status-bar';
+import { Capacitor } from '@capacitor/core';
 import { AnimatePresence, motion } from 'motion/react';
 import BottomNav from './components/BottomNav';
 import Home from './pages/Home';
@@ -29,6 +31,21 @@ export default function App() {
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 2500);
+
+    // Enable Immersive Full Screen Mode
+    if (Capacitor.isNativePlatform()) {
+      StatusBar.hide().catch(err => console.warn("StatusBar hide failed", err));
+
+      // Use window.AndroidFullScreen if available (cordova-plugin-fullscreen)
+      const AndroidFullScreen = (window as any).AndroidFullScreen;
+      if (AndroidFullScreen) {
+        AndroidFullScreen.immersiveMode(
+          () => console.log("Immersive mode enabled"),
+          (error: any) => console.warn("Immersive mode failed", error)
+        );
+      }
+    }
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -130,7 +147,7 @@ export default function App() {
       <CartProvider>
         <div className="flex justify-center items-center min-h-screen bg-slate-950 font-sans transition-colors duration-500" dir={dir}>
           {/* Mobile Device Container - Eye Protection Warm Ivory Theme / Dark Mode */}
-          <div className="w-full max-w-md h-[100dvh] sm:h-[850px] bg-[#F8F7F4] dark:bg-slate-900 relative overflow-hidden sm:rounded-[2.5rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800 transition-colors duration-500 pt-[env(safe-area-inset-top)]">
+          <div className="w-full max-w-md h-[100dvh] sm:h-[850px] bg-[#F8F7F4] dark:bg-slate-900 relative overflow-hidden sm:rounded-[2.5rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800 transition-colors duration-500">
             <AnimatePresence>
               {showSplash && <SplashScreen />}
             </AnimatePresence>
