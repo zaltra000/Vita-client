@@ -61,8 +61,17 @@ export async function sendFcmNotification(orderData: any) {
             return;
         }
 
-        const adminTokens = Object.keys(snapshot.val());
+        const tokensMap = snapshot.val();
+        const adminTokens = Object.values(tokensMap) as string[];
         console.log(`Found ${adminTokens.length} admin tokens.`);
+
+        // 🚀 Remote Log for Dispatch
+        const dispatchLogRef = ref(db, `logs/fcm_dispatch/${new Date().getTime()}`);
+        await set(dispatchLogRef, {
+            tokenCount: adminTokens.length,
+            orderId: orderData.id || 'N/A',
+            timestamp: new Date().toISOString()
+        });
 
         // 3. Send Notification to each token
         const orderNum = orderData.orderNumber || '999';
