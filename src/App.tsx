@@ -8,7 +8,8 @@ import OrderHistory from './pages/OrderHistory';
 
 import ProductModal from './components/ProductModal';
 import SplashScreen from './components/SplashScreen';
-import { Product } from './types';
+import { Product, HistoryOrder } from './types';
+import OrderDetailsModal from './components/OrderDetailsModal';
 import { useLanguage } from './context/LanguageContext';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -20,6 +21,7 @@ import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedHistoryOrder, setSelectedHistoryOrder] = useState<HistoryOrder | null>(null);
   const [showSplash, setShowSplash] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [dbError, setDbError] = useState<string | null>(null);
@@ -117,7 +119,7 @@ export default function App() {
       case 'contact':
         return <Contact />;
       case 'orders':
-        return <OrderHistory />;
+        return <OrderHistory onOrderClick={setSelectedHistoryOrder} />;
       default:
         return <Home products={products} onProductClick={setSelectedProduct} onNavigateToStore={onNavigateToStore} />;
     }
@@ -161,6 +163,12 @@ export default function App() {
               onClose={() => setSelectedProduct(null)}
               redirectOnAdd={activeTab === 'home'}
               onNavigateToStore={() => setActiveTab('store')}
+            />
+
+            {/* Order Details Modal (History) */}
+            <OrderDetailsModal
+              order={selectedHistoryOrder}
+              onClose={() => setSelectedHistoryOrder(null)}
             />
 
             {/* Shopping Cart */}

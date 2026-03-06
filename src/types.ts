@@ -21,3 +21,15 @@ export interface Product {
   bgColor: string;
   volume: string;
 }
+export interface HistoryOrder {
+  orderId: string;
+  orderNumber: number;
+  customerName: string;
+  customerPhone: string;
+  area: string;
+  locationUrl: string;
+  items: { name: string; quantity: number; price: number; subtotal: number }[];
+  totalAmount: number;
+  totalItems: number;
+  timestamp: string;
+}
