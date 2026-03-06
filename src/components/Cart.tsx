@@ -62,7 +62,7 @@ export default function Cart({ onNavigateToStore }: CartProps) {
               dir={dir}
             >
               {/* Header */}
-              <div className="px-6 py-5 bg-white dark:bg-slate-800 border-b border-stone-100 dark:border-slate-700 flex items-center justify-between shrink-0 transition-colors duration-500">
+              <div className="px-6 py-5 pt-[calc(1.25rem+env(safe-area-inset-top))] bg-white dark:bg-slate-800 border-b border-stone-100 dark:border-slate-700 flex items-center justify-between shrink-0 transition-colors duration-500">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full flex items-center justify-center">
                     <ShoppingBag size={20} />
@@ -149,7 +149,7 @@ export default function Cart({ onNavigateToStore }: CartProps) {
 
               {/* Footer */}
               {cartItems.length > 0 && (
-                <div className="bg-white dark:bg-slate-800 border-t border-stone-100 dark:border-slate-700 p-6 shrink-0 rounded-t-3xl shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)] transition-colors duration-500">
+                <div className="bg-white dark:bg-slate-800 border-t border-stone-100 dark:border-slate-700 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shrink-0 rounded-t-3xl shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)] transition-colors duration-500">
                   <div className="flex justify-between items-center mb-6">
                     <span className="text-stone-500 dark:text-stone-400 font-medium">{t('total')}</span>
                     <div className={`text-${dir === 'rtl' ? 'left' : 'right'}`}>

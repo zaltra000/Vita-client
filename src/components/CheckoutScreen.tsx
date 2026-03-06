@@ -341,7 +341,7 @@ export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: Che
 
                         {/* Footer */}
                         {!isSaving && (
-                            <div className="bg-white dark:bg-slate-800 border-t border-stone-100 dark:border-slate-700 p-6 shrink-0 rounded-t-3xl shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)]">
+                            <div className="bg-white dark:bg-slate-800 border-t border-stone-100 dark:border-slate-700 p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shrink-0 rounded-t-3xl shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)]">
                                 <button
                                     onClick={handleProceedToMap}
                                     className="w-full bg-emerald-700 dark:bg-emerald-600 text-white py-4 rounded-2xl font-bold text-base shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 active:scale-95 transition-all"

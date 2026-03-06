@@ -17,7 +17,7 @@ export default function BottomNav({ activeTab, setActiveTab }: BottomNavProps) {
   ];
 
   return (
-    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[340px] z-40">
+    <div className="absolute left-1/2 -translate-x-1/2 w-[90%] max-w-[340px] z-40 bottom-[calc(1.5rem+env(safe-area-inset-bottom))]">
       <div className="bg-gray-900/95 dark:bg-slate-800/95 backdrop-blur-xl rounded-full p-2 flex justify-between items-center shadow-2xl shadow-emerald-900/20 dark:shadow-emerald-900/40 border border-white/10 dark:border-slate-700 transition-colors duration-500">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;

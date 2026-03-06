@@ -130,8 +130,7 @@ export default function App() {
       <CartProvider>
         <div className="flex justify-center items-center min-h-screen bg-slate-950 font-sans transition-colors duration-500" dir={dir}>
           {/* Mobile Device Container - Eye Protection Warm Ivory Theme / Dark Mode */}
-          <div className="w-full max-w-md h-[100dvh] sm:h-[850px] bg-[#F8F7F4] dark:bg-slate-900 relative overflow-hidden sm:rounded-[2.5rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800 transition-colors duration-500">
-
+          <div className="w-full max-w-md h-[100dvh] sm:h-[850px] bg-[#F8F7F4] dark:bg-slate-900 relative overflow-hidden sm:rounded-[2.5rem] sm:shadow-2xl sm:border-[8px] sm:border-slate-800 transition-colors duration-500 pt-[env(safe-area-inset-top)]">
             <AnimatePresence>
               {showSplash && <SplashScreen />}
             </AnimatePresence>
