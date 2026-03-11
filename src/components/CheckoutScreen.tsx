@@ -39,6 +39,7 @@ export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: Che
     const [customerName, setCustomerName] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
     const [selectedArea, setSelectedArea] = useState('');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [availableAreas, setAvailableAreas] = useState<any[]>([]);
     const [showMap, setShowMap] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -302,26 +303,72 @@ export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: Che
                                         </div>
                                     </div>
 
-                                    {/* Delivery Area */}
-                                    <div className={dir === 'rtl' ? 'text-right' : 'text-left'}>
+                                    {/* Custom Animated Delivery Area Dropdown */}
+                                    <div className={dir === 'rtl' ? 'text-right z-10 relative' : 'text-left z-10 relative'}>
                                         <label className="text-xs font-bold text-stone-500 dark:text-stone-400 uppercase mb-2 block">{t('deliveryArea')}</label>
+                                        
                                         <div className="relative">
-                                            <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'right-0 pr-4' : 'left-0 pl-4'} flex items-center pointer-events-none`}>
-                                                <MapPin size={18} className="text-stone-400" />
-                                            </div>
-                                            <select
-                                                value={selectedArea}
-                                                onChange={(e) => setSelectedArea(e.target.value)}
-                                                className={`w-full bg-white dark:bg-slate-800 text-stone-800 dark:white rounded-2xl py-3.5 border border-stone-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 transition-all appearance-none ${dir === 'rtl' ? 'pr-11 pl-10 text-right' : 'pl-11 pr-10 text-left'}`}
+                                            <button
+                                                type="button"
+                                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                                className={`w-full flex items-center justify-between bg-white dark:bg-slate-800 text-stone-800 dark:text-white rounded-2xl py-3.5 border transition-all ${isDropdownOpen ? 'border-emerald-500 ring-2 ring-emerald-500/20' : 'border-stone-200 dark:border-slate-700'} ${dir === 'rtl' ? 'pr-11 pl-4 text-right' : 'pl-11 pr-4 text-left'}`}
                                             >
-                                                <option value="">{t('selectArea')}</option>
-                                                {availableAreas.map(area => (
-                                                    <option key={area.id} value={getLocalizedString(area, language)}>{getLocalizedString(area, language)}</option>
-                                                ))}
-                                            </select>
-                                            <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'left-0 pl-4' : 'right-0 pr-4'} flex items-center pointer-events-none`}>
-                                                <ChevronDown size={18} className="text-stone-400" />
-                                            </div>
+                                                <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'right-0 pr-4' : 'left-0 pl-4'} flex items-center pointer-events-none`}>
+                                                    <MapPin size={18} className={isDropdownOpen ? 'text-emerald-500' : 'text-stone-400'} />
+                                                </div>
+                                                
+                                                <span className={`block truncate font-medium ${!selectedArea ? 'text-stone-400 dark:text-stone-500' : ''}`}>
+                                                    {selectedArea || t('selectArea')}
+                                                </span>
+                                                
+                                                <motion.div animate={{ rotate: isDropdownOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                                                    <ChevronDown size={18} className="text-stone-400" />
+                                                </motion.div>
+                                            </button>
+
+                                            <AnimatePresence>
+                                                {isDropdownOpen && (
+                                                    <>
+                                                        <motion.div
+                                                            initial={{ opacity: 0 }}
+                                                            animate={{ opacity: 1 }}
+                                                            exit={{ opacity: 0 }}
+                                                            className="fixed inset-0 z-40"
+                                                            onClick={() => setIsDropdownOpen(false)}
+                                                        />
+                                                        <motion.div
+                                                            initial={{ opacity: 0, y: -10, scaleY: 0.95 }}
+                                                            animate={{ opacity: 1, y: 0, scaleY: 1 }}
+                                                            exit={{ opacity: 0, y: -10, scaleY: 0.95 }}
+                                                            transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+                                                            className={`absolute top-[calc(100%+8px)] left-0 w-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border border-stone-100 dark:border-slate-700 rounded-2xl shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] z-50 overflow-hidden origin-top`}
+                                                        >
+                                                            <div className="max-h-60 overflow-y-auto custom-scrollbar p-1.5 flex flex-col gap-1">
+                                                                {availableAreas.map((area, index) => {
+                                                                    const areaName = getLocalizedString(area, language);
+                                                                    const isSelected = selectedArea === areaName;
+                                                                    return (
+                                                                        <motion.button
+                                                                            key={area.id}
+                                                                            initial={{ opacity: 0, x: dir === 'rtl' ? 20 : -20 }}
+                                                                            animate={{ opacity: 1, x: 0 }}
+                                                                            transition={{ delay: index * 0.05 }}
+                                                                            onClick={() => {
+                                                                                setSelectedArea(areaName);
+                                                                                setIsDropdownOpen(false);
+                                                                            }}
+                                                                            className={`w-full flex items-center justify-between px-3 py-3 rounded-xl transition-all ${isSelected ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold' : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-slate-700/50 hover:text-stone-900 dark:hover:text-white font-medium'} ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                                                                        >
+                                                                            {areaName}
+                                                                            {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+                                                                        </motion.button>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        </motion.div>
+                                                    </>
+                                                )}
+                                            </AnimatePresence>
                                         </div>
                                     </div>
 

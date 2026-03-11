@@ -4,6 +4,7 @@ import { Search, ShoppingBag, LayoutGrid, List, Plus, Minus } from 'lucide-react
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
+import ThemeToggle from '../components/ThemeToggle';
 import { formatPrice, getLocalizedString } from '../utils';
 
 interface StoreProps {
@@ -57,6 +58,7 @@ export default function Store({ products, categories, onProductClick, initialCat
             >
               {isGridView ? <List size={18} /> : <LayoutGrid size={18} />}
             </button>
+            <ThemeToggle />
             <button 
               onClick={() => setIsCartOpen(true)}
               className="relative w-10 h-10 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-stone-100 dark:border-slate-700 flex items-center justify-center text-emerald-600 dark:text-emerald-400 active:scale-90 transition-transform"
@@ -172,28 +174,28 @@ export default function Store({ products, categories, onProductClick, initialCat
                         {/* Quantity Controls Direct on Card */}
                         <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                           {quantity > 0 ? (
-                            <div className="flex items-center bg-stone-100 dark:bg-slate-700 rounded-full h-9 px-1 transition-all">
+                            <div className="flex items-center bg-stone-100 dark:bg-slate-700 rounded-2xl h-11 px-1.5 transition-all">
                               <button
                                 onClick={() => updateQuantity(product.id, quantity - 1)}
-                                className="w-7 h-7 bg-white dark:bg-slate-600 rounded-full flex items-center justify-center text-stone-500 dark:text-stone-300 shadow-sm active:scale-90 transition-transform"
+                                className="w-8 h-8 sm:w-9 sm:h-9 bg-white dark:bg-slate-600 rounded-xl flex items-center justify-center text-stone-500 dark:text-stone-300 shadow-sm active:scale-90 transition-transform"
                               >
-                                <Minus size={14} />
+                                <Minus size={16} strokeWidth={2.5} />
                               </button>
-                              <span className="w-5 text-center text-xs font-black text-stone-800 dark:text-white">{quantity}</span>
+                              <span className="w-6 sm:w-8 text-center text-sm font-black text-stone-800 dark:text-white">{quantity}</span>
                               <button
                                 onClick={() => updateQuantity(product.id, quantity + 1)}
-                                className="w-7 h-7 bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-sm active:scale-90 transition-transform"
+                                className="w-8 h-8 sm:w-9 sm:h-9 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-sm active:scale-90 transition-transform"
                               >
-                                <Plus size={14} />
+                                <Plus size={16} strokeWidth={2.5} />
                               </button>
                             </div>
                           ) : (
                             <button 
                               onClick={() => addToCart(product, 1)}
                               disabled={product.stock === 0}
-                              className={`w-9 h-9 ${product.stock === 0 ? 'bg-stone-50 dark:bg-slate-800 text-stone-300' : 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 active:scale-90 hover:bg-emerald-600 hover:text-white'} rounded-xl shadow-sm border border-stone-100 dark:border-slate-700 flex items-center justify-center transition-all`}
+                              className={`w-11 h-11 ${product.stock === 0 ? 'bg-stone-50 dark:bg-slate-800 text-stone-300' : 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 active:scale-90 hover:bg-emerald-600 hover:text-white shadow-sm border border-stone-100 dark:border-slate-700/50'} rounded-2xl flex items-center justify-center transition-all`}
                             >
-                              <Plus size={18} />
+                              <Plus size={22} strokeWidth={2.5} />
                             </button>
                           )}
                         </div>
