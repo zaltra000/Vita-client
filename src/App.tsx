@@ -135,11 +135,11 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const onNavigateToStore = (catId?: string) => {
     if (catId) setSelectedCategory(catId);
-    else setSelectedCategory('All');
+    else setSelectedCategory(null);
     setActiveTab('store');
   };
 

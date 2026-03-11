@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Product, Category } from '../types';
-import { Search, ShoppingBag, LayoutGrid, List, Filter, ArrowUpDown } from 'lucide-react';
+import { Search, ShoppingBag, LayoutGrid, List, Plus, Minus } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
@@ -15,7 +15,7 @@ interface StoreProps {
 
 export default function Store({ products, categories, onProductClick, initialCategory }: StoreProps) {
   const { t, language, dir } = useLanguage();
-  const { cartCount, setIsCartOpen } = useCart();
+  const { cartCount, setIsCartOpen, cartItems, addToCart, updateQuantity } = useCart();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(initialCategory || null);
   const [isGridView, setIsGridView] = useState(true);
@@ -27,6 +27,18 @@ export default function Store({ products, categories, onProductClick, initialCat
       return matchesSearch && matchesCategory;
     });
   }, [products, searchQuery, selectedCategory, language]);
+
+  // Sync internal category state with prop if it changes (e.g. via navigation)
+  useMemo(() => {
+    if (initialCategory !== undefined) {
+      setSelectedCategory(initialCategory);
+    }
+  }, [initialCategory]);
+
+  const getItemQuantity = (productId: string) => {
+    const item = cartItems.find(i => i.product.id === productId);
+    return item ? item.quantity : 0;
+  };
 
   return (
     <div className="pb-36 bg-[#F8F7F4] dark:bg-slate-900 transition-colors duration-300 min-h-screen" dir={dir}>
@@ -107,58 +119,89 @@ export default function Store({ products, categories, onProductClick, initialCat
               layout
               className={isGridView ? "grid grid-cols-2 gap-4" : "flex flex-col gap-4"}
             >
-              {filteredProducts.map((product) => (
-                <motion.div
-                  key={product.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  onClick={() => onProductClick(product)}
-                  className={`bg-white dark:bg-slate-800 rounded-[2rem] border border-stone-100 dark:border-slate-700 shadow-sm overflow-hidden active:scale-[0.97] transition-all group flex ${isGridView ? 'flex-col' : 'flex-row h-32'}`}
-                >
-                  <div className={`relative ${isGridView ? 'h-40 w-full' : 'w-32 h-full'} ${product.bgColor || 'bg-stone-50 dark:bg-slate-700'} flex items-center justify-center overflow-hidden shrink-0`}>
-                    <img
-                      src={product.imageUrl}
-                      alt={getLocalizedString(product.name, language)}
-                      className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal transform group-hover:scale-110 transition-transform duration-700"
-                      loading="lazy"
-                    />
-                    {product.salePrice !== undefined && product.salePrice !== null && (
-                      <div className="absolute top-3 left-3 bg-rose-500 text-white text-[9px] font-black px-2 py-1 rounded-full shadow-lg">
-                        -{Math.round((1 - (product.salePrice / product.price)) * 100)}%
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className={`p-4 flex flex-col justify-between flex-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                    <div>
-                      <h3 className="text-sm font-bold text-stone-800 dark:text-white mb-1 line-clamp-1 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
-                        {getLocalizedString(product.name, language)}
-                      </h3>
-                      {product.stock === 0 && (
-                        <span className="text-[10px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-2 py-0.5 rounded-full">{language === 'ar' ? 'نفد المخزون' : 'Out of Stock'}</span>
+              {filteredProducts.map((product) => {
+                const quantity = getItemQuantity(product.id);
+                return (
+                  <motion.div
+                    key={product.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className={`bg-white dark:bg-slate-800 rounded-[2rem] border border-stone-100 dark:border-slate-700 shadow-sm overflow-hidden transition-all group flex ${isGridView ? 'flex-col' : 'flex-row h-32'}`}
+                  >
+                    <div 
+                      onClick={() => onProductClick(product)}
+                      className={`relative cursor-pointer ${isGridView ? 'h-40 w-full' : 'w-32 h-full'} ${product.bgColor || 'bg-stone-50 dark:bg-slate-700'} flex items-center justify-center overflow-hidden shrink-0`}
+                    >
+                      <img
+                        src={product.imageUrl}
+                        alt={getLocalizedString(product.name, language)}
+                        className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal transform group-hover:scale-110 transition-transform duration-700"
+                        loading="lazy"
+                      />
+                      {product.salePrice !== undefined && product.salePrice !== null && (
+                        <div className="absolute top-3 left-3 bg-rose-500 text-white text-[9px] font-black px-2 py-1 rounded-full shadow-lg">
+                          -{Math.round((1 - (product.salePrice / product.price)) * 100)}%
+                        </div>
                       )}
                     </div>
                     
-                    <div className="flex items-center justify-between mt-2">
-                      <div className="flex flex-col">
-                        {product.salePrice !== undefined && product.salePrice !== null ? (
-                          <>
-                            <span className="text-emerald-700 dark:text-emerald-400 font-black text-sm">{formatPrice(product.salePrice)} {t('sdg')}</span>
-                            <span className="text-[10px] text-stone-400 line-through">{formatPrice(product.price)}</span>
-                          </>
-                        ) : (
-                          <span className="text-emerald-700 dark:text-emerald-400 font-black text-sm">{formatPrice(product.price)} {t('sdg')}</span>
+                    <div className={`p-4 flex flex-col justify-between flex-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                      <div onClick={() => onProductClick(product)} className="cursor-pointer">
+                        <h3 className="text-sm font-bold text-stone-800 dark:text-white mb-1 line-clamp-1 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                          {getLocalizedString(product.name, language)}
+                        </h3>
+                        {product.stock === 0 && (
+                          <span className="text-[10px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-2 py-0.5 rounded-full">{language === 'ar' ? 'نفد المخزون' : 'Out of Stock'}</span>
                         )}
                       </div>
-                      <div className="w-8 h-8 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all">
-                        <ShoppingBag size={14} className="text-emerald-600 dark:text-emerald-400 group-hover:text-white" />
+                      
+                      <div className="flex items-center justify-between mt-2">
+                        <div className="flex flex-col" onClick={() => onProductClick(product)}>
+                          {product.salePrice !== undefined && product.salePrice !== null ? (
+                            <>
+                              <span className="text-emerald-700 dark:text-emerald-400 font-black text-sm">{formatPrice(product.salePrice)} {t('sdg')}</span>
+                              <span className="text-[10px] text-stone-400 line-through">{formatPrice(product.price)}</span>
+                            </>
+                          ) : (
+                            <span className="text-emerald-700 dark:text-emerald-400 font-black text-sm">{formatPrice(product.price)} {t('sdg')}</span>
+                          )}
+                        </div>
+
+                        {/* Quantity Controls Direct on Card */}
+                        <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                          {quantity > 0 ? (
+                            <div className="flex items-center bg-stone-100 dark:bg-slate-700 rounded-full h-9 px-1 transition-all">
+                              <button
+                                onClick={() => updateQuantity(product.id, quantity - 1)}
+                                className="w-7 h-7 bg-white dark:bg-slate-600 rounded-full flex items-center justify-center text-stone-500 dark:text-stone-300 shadow-sm active:scale-90 transition-transform"
+                              >
+                                <Minus size={14} />
+                              </button>
+                              <span className="w-5 text-center text-xs font-black text-stone-800 dark:text-white">{quantity}</span>
+                              <button
+                                onClick={() => updateQuantity(product.id, quantity + 1)}
+                                className="w-7 h-7 bg-emerald-600 text-white rounded-full flex items-center justify-center shadow-sm active:scale-90 transition-transform"
+                              >
+                                <Plus size={14} />
+                              </button>
+                            </div>
+                          ) : (
+                            <button 
+                              onClick={() => addToCart(product, 1)}
+                              disabled={product.stock === 0}
+                              className={`w-9 h-9 ${product.stock === 0 ? 'bg-stone-50 dark:bg-slate-800 text-stone-300' : 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 active:scale-90 hover:bg-emerald-600 hover:text-white'} rounded-xl shadow-sm border border-stone-100 dark:border-slate-700 flex items-center justify-center transition-all`}
+                            >
+                              <Plus size={18} />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </motion.div>
           ) : (
             <motion.div 
