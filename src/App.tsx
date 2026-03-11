@@ -24,15 +24,13 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedHistoryOrder, setSelectedHistoryOrder] = useState<HistoryOrder | null>(null);
-  const [showSplash, setShowSplash] = useState(true);
+  const [showSplash, setShowSplash] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [dbError, setDbError] = useState<string | null>(null);
   const { dir, language } = useLanguage();
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 2500);
-
     // Enable Immersive Full Screen Mode
     if (Capacitor.isNativePlatform()) {
       StatusBar.hide().catch(err => console.warn("StatusBar hide failed", err));
@@ -46,8 +44,6 @@ export default function App() {
         );
       }
     }
-
-    return () => clearTimeout(timer);
   }, []);
 
   // Ensure authentication for database access
