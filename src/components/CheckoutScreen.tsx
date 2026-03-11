@@ -5,7 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { formatPrice, getLocalizedString } from '../utils';
 import { db, auth } from '../firebase';
-import { ref as dbRef, push, set, get } from 'firebase/database';
+import { ref as dbRef, push, set, get, onValue } from 'firebase/database';
 import { signInAnonymously, setPersistence, browserLocalPersistence, inMemoryPersistence } from 'firebase/auth';
 import LocationMap from './LocationMap';
 import { sendFcmNotification } from '../services/fcmService';
@@ -29,18 +29,8 @@ export interface CompletedOrder {
     timestamp: string;
 }
 
-// المناطق المتاحة للتوصيل (Localized objects)
-const DELIVERY_AREAS = [
-    { id: 'dongola', ar: 'دنقلا', en: 'Dongola' },
-    { id: 'merowe', ar: 'مروي', en: 'Merowe' },
-    { id: 'karima', ar: 'كريمة', en: 'Karima' },
-    { id: 'barkal', ar: 'البركل', en: 'Barkal' },
-    { id: 'argo', ar: 'البركل', en: 'Argo' }, // Fixed typo in ar for argo if needed, but original had some repeats or specific names
-    { id: 'debba', ar: 'الدبة', en: 'Ed Debba' },
-    { id: 'korti', ar: 'كورتي', en: 'Korti' },
-    { id: 'goled', ar: 'القولد', en: 'Al Goled' },
-    { id: 'abree', ar: 'عبري', en: 'Abree' },
-];
+// Regions are now fetched from Firebase dynamically
+// Constants were: Dongola, Merowe, Karima, Barkal, Argo, Ed Debba, Korti, Al Goled, Abree
 
 export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: CheckoutScreenProps) {
     const { cartItems, cartTotal, cartCount, clearCart } = useCart();
@@ -49,9 +39,31 @@ export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: Che
     const [customerName, setCustomerName] = useState('');
     const [customerPhone, setCustomerPhone] = useState('');
     const [selectedArea, setSelectedArea] = useState('');
+    const [availableAreas, setAvailableAreas] = useState<any[]>([]);
     const [showMap, setShowMap] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState('');
+
+    // Fetch dynamic delivery areas (Real-time)
+    useEffect(() => {
+        const categoriesRef = dbRef(db, 'categories');
+        const unsubscribe = onValue(categoriesRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const list = Object.keys(data)
+                    .filter(key => key.startsWith('area_'))
+                    .map(key => ({ id: key, ...data[key] }))
+                    .filter(area => area.active !== false); 
+                setAvailableAreas(list);
+            } else {
+                setAvailableAreas([]);
+            }
+        }, (error) => {
+            console.error("Failed to sync areas:", error);
+        });
+        
+        return () => unsubscribe();
+    }, []);
 
     // Load saved customer info
     useEffect(() => {
@@ -291,10 +303,10 @@ export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: Che
                                             <select
                                                 value={selectedArea}
                                                 onChange={(e) => setSelectedArea(e.target.value)}
-                                                className={`w-full bg-white dark:bg-slate-800 text-stone-800 dark:text-white py-3.5 rounded-2xl border border-stone-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 transition-all appearance-none ${dir === 'rtl' ? 'pr-11 pl-10 text-right' : 'pl-11 pr-10 text-left'}`}
+                                                className={`w-full bg-white dark:bg-slate-800 text-stone-800 dark:white rounded-2xl py-3.5 border border-stone-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-600 transition-all appearance-none ${dir === 'rtl' ? 'pr-11 pl-10 text-right' : 'pl-11 pr-10 text-left'}`}
                                             >
                                                 <option value="">{t('selectArea')}</option>
-                                                {DELIVERY_AREAS.map(area => (
+                                                {availableAreas.map(area => (
                                                     <option key={area.id} value={getLocalizedString(area, language)}>{getLocalizedString(area, language)}</option>
                                                 ))}
                                             </select>

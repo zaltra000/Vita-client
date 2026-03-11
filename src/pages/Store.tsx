@@ -32,7 +32,9 @@ export default function Store({ products, onProductClick, initialCategory = 'All
     const unsubscribe = onValue(categoriesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+        const list = Object.keys(data)
+          .filter(key => !key.startsWith('area_'))
+          .map(key => ({ id: key, ...data[key] }));
         setCategories([{ id: 'All', en: 'All', ar: 'الكل' }, ...list]);
       } else {
         setCategories([

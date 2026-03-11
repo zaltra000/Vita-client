@@ -28,7 +28,9 @@ export default function Home({ products, onProductClick, onNavigateToStore }: Ho
     const unsubscribe = onValue(categoriesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+        const list = Object.keys(data)
+          .filter(key => !key.startsWith('area_'))
+          .map(key => ({ id: key, ...data[key] }));
         setCategories(list);
       } else {
         setCategories([

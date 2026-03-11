@@ -3,13 +3,14 @@ import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBMVil6PMKVb5fy9TEZ_otnQWiKUoykU5I",
-  authDomain: "vita-e5e4f.firebaseapp.com",
-  databaseURL: "https://vita-e5e4f-default-rtdb.firebaseio.com",
-  projectId: "vita-e5e4f",
-  storageBucket: "vita-e5e4f.firebasestorage.app",
-  messagingSenderId: "843718426446",
-  appId: "1:843718426446:web:adcee38f4fa8ec6ab7a81f"
+  apiKey: "AIzaSyAt266qo1jRybwgsCOnyOTvwIS3J8eYkAo",
+  authDomain: "vita-f39ba.firebaseapp.com",
+  databaseURL: "https://vita-f39ba-default-rtdb.firebaseio.com",
+  projectId: "vita-f39ba",
+  storageBucket: "vita-f39ba.firebasestorage.app",
+  messagingSenderId: "709057596489",
+  appId: "1:709057596489:web:47f0dabd27b656980b0398",
+  measurementId: "G-XQCFP2P04T"
 };
 
 const app = initializeApp(firebaseConfig);
