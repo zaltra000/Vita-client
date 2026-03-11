@@ -24,13 +24,15 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedHistoryOrder, setSelectedHistoryOrder] = useState<HistoryOrder | null>(null);
-  const [showSplash, setShowSplash] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [dbError, setDbError] = useState<string | null>(null);
   const { dir, language } = useLanguage();
 
   useEffect(() => {
+    const timer = setTimeout(() => setShowSplash(false), 1500);
+
     // Enable Immersive Full Screen Mode
     if (Capacitor.isNativePlatform()) {
       StatusBar.hide().catch(err => console.warn("StatusBar hide failed", err));
@@ -44,6 +46,8 @@ export default function App() {
         );
       }
     }
+
+    return () => clearTimeout(timer);
   }, []);
 
   // Ensure authentication for database access
@@ -172,7 +176,7 @@ export default function App() {
 
             {/* Main Content Area */}
             <div className="h-full overflow-y-auto hide-scrollbar relative">
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait" initial={false}>
                 {!showSplash && (
                   <motion.div
                     key={`${activeTab}-${language}`}
