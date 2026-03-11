@@ -99,8 +99,17 @@ export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: Che
     };
 
     const handleProceedToMap = () => {
-        if (!customerName.trim()) { setError(t('errorNameRequired')); return; }
-        if (!customerPhone.trim()) { setError(t('errorPhoneRequired')); return; }
+        const trimmedName = customerName.trim();
+        const trimmedPhone = customerPhone.trim();
+
+        if (!trimmedName || trimmedName.length < 2) { 
+            setError(language === 'ar' ? 'يرجى إدخال اسم صحيح (حرفان على الأقل)' : 'Please enter a valid name (at least 2 characters)'); 
+            return; 
+        }
+        if (!/^(09|\+249)\d{8,9}$/.test(trimmedPhone)) { 
+            setError(language === 'ar' ? 'يرجى إدخال رقم هاتف صحيح (مثال: 09XXXXXXXX)' : 'Please enter a valid phone number (e.g. 09XXXXXXXX)'); 
+            return; 
+        }
         if (!selectedArea) { setError(t('errorAreaRequired')); return; }
         setError('');
         setShowMap(true);

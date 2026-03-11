@@ -5,17 +5,17 @@ import { AnimatePresence, motion } from 'motion/react';
 import BottomNav from './components/BottomNav';
 import Home from './pages/Home';
 import Store from './pages/Store';
-import Contact from './pages/Contact';
 import OrderHistory from './pages/OrderHistory';
 
 import ProductModal from './components/ProductModal';
 import SplashScreen from './components/SplashScreen';
-import { Product, HistoryOrder } from './types';
+import { Product, HistoryOrder, Category } from './types';
 import OrderDetailsModal from './components/OrderDetailsModal';
 import { useLanguage } from './context/LanguageContext';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Cart from './components/Cart';
+import ErrorBoundary from './components/ErrorBoundary';
 import { db, auth } from './firebase';
 import { ref, onValue } from 'firebase/database';
 import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
@@ -26,6 +26,7 @@ export default function App() {
   const [selectedHistoryOrder, setSelectedHistoryOrder] = useState<HistoryOrder | null>(null);
   const [showSplash, setShowSplash] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [dbError, setDbError] = useState<string | null>(null);
   const { dir, language } = useLanguage();
 
@@ -113,6 +114,27 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const categoriesRef = ref(db, 'categories');
+    const unsubscribe = onValue(categoriesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const list = Object.keys(data)
+          .filter(key => !key.startsWith('area_'))
+          .map(key => ({ id: key, ...data[key] }));
+        setCategories(list);
+      } else {
+        setCategories([
+          { id: 'General', en: 'General', ar: 'عام' },
+          { id: 'Soft Drinks', en: 'Soft Drinks', ar: 'مشروبات غازية' },
+          { id: 'Water', en: 'Water', ar: 'مياه' },
+          { id: 'Juices', en: 'Juices', ar: 'عصائر' },
+        ]);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   const onNavigateToStore = (catId?: string) => {
@@ -124,25 +146,25 @@ export default function App() {
   const renderPage = () => {
     switch (activeTab) {
       case 'home':
-        return <Home products={products} onProductClick={setSelectedProduct} onNavigateToStore={onNavigateToStore} />;
+        return <Home products={products} categories={categories} onProductClick={setSelectedProduct} onNavigateToStore={onNavigateToStore} />;
       case 'store':
         return (
           <Store
             products={products}
+            categories={categories}
             onProductClick={setSelectedProduct}
             initialCategory={selectedCategory}
           />
         );
-      case 'contact':
-        return <Contact />;
       case 'orders':
         return <OrderHistory onOrderClick={setSelectedHistoryOrder} />;
       default:
-        return <Home products={products} onProductClick={setSelectedProduct} onNavigateToStore={onNavigateToStore} />;
+        return <Home products={products} categories={categories} onProductClick={setSelectedProduct} onNavigateToStore={onNavigateToStore} />;
     }
   };
 
   return (
+    <ErrorBoundary>
     <ThemeProvider>
       <CartProvider>
         <div className="flex justify-center items-center min-h-screen bg-slate-950 font-sans transition-colors duration-500" dir={dir}>
@@ -193,5 +215,6 @@ export default function App() {
         </div>
       </CartProvider>
     </ThemeProvider>
+    </ErrorBoundary>
   );
 }
