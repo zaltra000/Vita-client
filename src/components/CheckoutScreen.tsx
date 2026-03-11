@@ -107,8 +107,8 @@ export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: Che
             setError(language === 'ar' ? 'يرجى إدخال اسم صحيح (حرفان على الأقل)' : 'Please enter a valid name (at least 2 characters)'); 
             return; 
         }
-        if (!/^(09|\+249)\d{8,9}$/.test(trimmedPhone)) { 
-            setError(language === 'ar' ? 'يرجى إدخال رقم هاتف صحيح (مثال: 09XXXXXXXX)' : 'Please enter a valid phone number (e.g. 09XXXXXXXX)'); 
+        if (!/^0\d{9}$/.test(trimmedPhone)) { 
+            setError(language === 'ar' ? 'يرجى إدخال رقم هاتف صحيح مكون من 10 أرقام' : 'Please enter a valid 10-digit phone number'); 
             return; 
         }
         if (!selectedArea) { setError(t('errorAreaRequired')); return; }

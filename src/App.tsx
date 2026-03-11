@@ -33,18 +33,9 @@ export default function App() {
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 1500);
 
-    // Enable Immersive Full Screen Mode
+    // Hide only the top status bar, keep bottom nav bar visible
     if (Capacitor.isNativePlatform()) {
       StatusBar.hide().catch(err => console.warn("StatusBar hide failed", err));
-
-      // Use window.AndroidFullScreen if available (cordova-plugin-fullscreen)
-      const AndroidFullScreen = (window as any).AndroidFullScreen;
-      if (AndroidFullScreen) {
-        AndroidFullScreen.immersiveMode(
-          () => console.log("Immersive mode enabled"),
-          (error: any) => console.warn("Immersive mode failed", error)
-        );
-      }
     }
 
     return () => clearTimeout(timer);
