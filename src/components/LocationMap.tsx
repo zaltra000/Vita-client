@@ -213,7 +213,7 @@ export default function LocationMap({ area, onLocationConfirmed, onCancel }: Loc
             </div>
 
             {/* Footer */}
-            <div className="p-4 bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border-t border-stone-100 dark:border-slate-700 shrink-0 z-10">
+            <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-white/90 dark:bg-slate-800/90 backdrop-blur-xl border-t border-stone-100 dark:border-slate-700 shrink-0 z-10">
                 <button
                     onClick={handleConfirm}
                     disabled={!selectedLocation}
