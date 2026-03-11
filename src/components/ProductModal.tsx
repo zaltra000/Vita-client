@@ -142,7 +142,7 @@ export default function ProductModal({ product, onClose, redirectOnAdd, onNaviga
                     
                     <div className="flex flex-col items-center px-4">
                       <span className="text-2xl font-bold text-stone-800 dark:text-white">{quantity}</span>
-                      <span className="text-xs text-stone-400 font-medium">{t('inCart')}</span>
+                      <span className="text-[10px] text-stone-400 font-bold whitespace-nowrap">{language === 'ar' ? 'في السلة (كرتونة)' : 'Cartons in Cart'}</span>
                     </div>
 
                     <button 

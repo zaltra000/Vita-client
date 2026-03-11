@@ -131,7 +131,10 @@ export default function Cart({ onNavigateToStore }: CartProps) {
                               >
                                 <Minus size={14} />
                               </button>
-                              <span className="font-bold text-stone-800 dark:text-white w-4 text-center text-sm">{item.quantity}</span>
+                              <span className="font-bold text-stone-800 dark:text-white min-w-[1.5rem] flex flex-col items-center justify-center leading-none text-center text-sm">
+                                <span>{item.quantity}</span>
+                                <span className="text-[8px] font-bold text-stone-400 mt-1">{language === 'ar' ? 'كرتونة' : 'Carton'}</span>
+                              </span>
                               <button
                                 onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
                                 className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors"

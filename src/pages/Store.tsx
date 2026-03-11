@@ -6,6 +6,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import ThemeToggle from '../components/ThemeToggle';
 import { formatPrice, getLocalizedString } from '../utils';
+import OnboardingTour from '../components/OnboardingTour';
 
 interface StoreProps {
   products: Product[];
@@ -43,6 +44,7 @@ export default function Store({ products, categories, onProductClick, initialCat
 
   return (
     <div className="pb-36 bg-[#F8F7F4] dark:bg-slate-900 transition-colors duration-300 min-h-screen" dir={dir}>
+      <OnboardingTour />
       
       {/* ─── Top Bar ─── */}
       <div className="sticky top-0 z-30 bg-[#F8F7F4]/80 dark:bg-slate-900/80 backdrop-blur-xl px-5 pt-12 pb-4">
@@ -154,12 +156,15 @@ export default function Store({ products, categories, onProductClick, initialCat
                         <h3 className="text-sm font-bold text-stone-800 dark:text-white mb-1 line-clamp-1 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
                           {getLocalizedString(product.name, language)}
                         </h3>
+                        <p className={`text-[10px] text-stone-500 dark:text-stone-400 line-clamp-2 mb-2 leading-relaxed ${isGridView ? 'h-7' : 'min-h-[1.75rem]'}`}>
+                          {getLocalizedString(product.description, language)}
+                        </p>
                         {product.stock === 0 && (
                           <span className="text-[10px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-2 py-0.5 rounded-full">{language === 'ar' ? 'نفد المخزون' : 'Out of Stock'}</span>
                         )}
                       </div>
                       
-                      <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center justify-between mt-auto pt-2 border-t border-stone-50 dark:border-slate-700/50">
                         <div className="flex flex-col" onClick={() => onProductClick(product)}>
                           {product.salePrice !== undefined && product.salePrice !== null ? (
                             <>
@@ -181,7 +186,10 @@ export default function Store({ products, categories, onProductClick, initialCat
                               >
                                 <Minus size={16} strokeWidth={2.5} />
                               </button>
-                              <span className="w-6 sm:w-8 text-center text-sm font-black text-stone-800 dark:text-white">{quantity}</span>
+                              <span className="min-w-[1.5rem] sm:min-w-[2rem] text-center text-sm font-black text-stone-800 dark:text-white flex flex-col items-center justify-center leading-none">
+                                <span>{quantity}</span>
+                                <span className="text-[8px] font-bold text-stone-400 mt-0.5">{language === 'ar' ? 'كرتونة' : 'Carton'}</span>
+                              </span>
                               <button
                                 onClick={() => updateQuantity(product.id, quantity + 1)}
                                 className="w-8 h-8 sm:w-9 sm:h-9 bg-emerald-600 text-white rounded-xl flex items-center justify-center shadow-sm active:scale-90 transition-transform"
@@ -193,9 +201,10 @@ export default function Store({ products, categories, onProductClick, initialCat
                             <button 
                               onClick={() => addToCart(product, 1)}
                               disabled={product.stock === 0}
-                              className={`w-11 h-11 ${product.stock === 0 ? 'bg-stone-50 dark:bg-slate-800 text-stone-300' : 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 active:scale-90 hover:bg-emerald-600 hover:text-white shadow-sm border border-stone-100 dark:border-slate-700/50'} rounded-2xl flex items-center justify-center transition-all`}
+                              className={`h-11 px-3 ${product.stock === 0 ? 'bg-stone-50 dark:bg-slate-800 text-stone-300' : 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 active:scale-90 hover:bg-emerald-600 hover:text-white shadow-sm border border-stone-100 dark:border-slate-700/50'} rounded-2xl flex items-center justify-center gap-1.5 transition-all`}
                             >
-                              <Plus size={22} strokeWidth={2.5} />
+                              <Plus size={18} strokeWidth={2.5} />
+                              <span className="text-[11px] font-bold whitespace-nowrap">{language === 'ar' ? 'إضافة' : 'Add'}</span>
                             </button>
                           )}
                         </div>

@@ -381,7 +381,7 @@ export default function CheckoutScreen({ isOpen, onClose, onOrderComplete }: Che
                                                 return (
                                                     <div key={item.product.id} className="flex justify-between items-center text-sm">
                                                         <span className="text-stone-600 dark:text-stone-300 truncate flex-1">
-                                                            {getLocalizedString(item.product.name, language)} × {item.quantity}
+                                                            {getLocalizedString(item.product.name, language)} × {item.quantity} {language === 'ar' ? 'كرتونة' : 'Carton'}
                                                         </span>
                                                         <span className="text-stone-800 dark:text-white font-bold mx-3">
                                                             {price === 0 ? t('free') : `${formatPrice(price * item.quantity)} ${t('sdg')}`}
